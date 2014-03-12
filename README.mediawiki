@@ -1,0 +1,37 @@
+==Introduction==
+A java adapter implementation of Baidu PCS(Baidu Pan) REST API. Not completely implemented yet.
+
+==Use as maven dependency==
+*Config dependency
+ <dependencies>
+  <dependency>
+   <groupId>blove.baidupcs</groupid>
+   <artifactId>baidupcs</artifactid>
+   <version>(LATEST VERSION)</version>
+  </dependency>
+ </dependencies>
+*Config repository
+ <repositories>
+  <repository>
+   <id>blove-git-releases</id>
+   <name>Blove's Release Repository on GitHub</name>
+   <url>https://github.com/blovemaple/maven-repository/raw/master/releases</url>
+   <releases>
+    <enabled>true</enabled>
+   </releases>
+   <snapshots>
+    <enabled>false</enabled>
+   </snapshots>
+  </repository>
+  <repository>
+   <id>blove-git-snapshots</id>
+   <name>Blove's Snapshot Repository on GitHub</name>
+   <url>https://github.com/blovemaple/maven-repository/raw/master/snapshots</url>
+   <releases>
+    <enabled>false</enabled>
+   </releases>
+   <snapshots>
+    <enabled>true</enabled>
+   </snapshots>
+  </repository>
+ </repositories>
