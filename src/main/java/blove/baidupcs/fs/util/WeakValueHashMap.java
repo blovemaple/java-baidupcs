@@ -154,8 +154,7 @@ public class WeakValueHashMap<K, V> implements Map<K, V> {
 			@Override
 			public Iterator<V> iterator() {
 				return new Iterator<V>() {
-					private Iterator<WeakReference<V>> oriItr = oriValues
-							.iterator();
+					private Iterator<WeakReference<V>> oriItr = oriValues.iterator();
 
 					@Override
 					public boolean hasNext() {
@@ -276,8 +275,7 @@ public class WeakValueHashMap<K, V> implements Map<K, V> {
 			@Override
 			public Iterator<Entry<K, V>> iterator() {
 				return new Iterator<Entry<K, V>>() {
-					private Iterator<Entry<K, WeakReference<V>>> oriItr = oriSet
-							.iterator();
+					private Iterator<Entry<K, WeakReference<V>>> oriItr = oriSet.iterator();
 
 					@Override
 					public boolean hasNext() {
@@ -374,8 +372,7 @@ public class WeakValueHashMap<K, V> implements Map<K, V> {
 				oriSet.clear();
 			}
 
-			private Entry<K, V> unweakEntry(
-					final Entry<K, WeakReference<V>> entry) {
+			private Entry<K, V> unweakEntry(final Entry<K, WeakReference<V>> entry) {
 				return new Entry<K, V>() {
 
 					@Override
@@ -390,8 +387,7 @@ public class WeakValueHashMap<K, V> implements Map<K, V> {
 
 					@Override
 					public V setValue(V value) {
-						WeakReference<V> lastValue = entry
-								.setValue(new WeakReference<V>(value));
+						WeakReference<V> lastValue = entry.setValue(new WeakReference<V>(value));
 						if (lastValue == null)
 							return null;
 						else
@@ -404,8 +400,7 @@ public class WeakValueHashMap<K, V> implements Map<K, V> {
 			private Entry<K, WeakReference<V>> weakEntry(final Entry<K, V> entry) {
 				return new Entry<K, WeakReference<V>>() {
 
-					private WeakReference<V> value = new WeakReference<V>(
-							entry.getValue());
+					private WeakReference<V> value = new WeakReference<V>(entry.getValue());
 
 					@Override
 					public K getKey() {

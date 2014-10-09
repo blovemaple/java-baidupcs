@@ -23,8 +23,7 @@ public class FileMetaWithExtra1 extends FileMeta {
 		return fromResponseMeta(resList.get(0));
 	}
 
-	public static List<FileMetaWithExtra1> fromBatchResponse(
-			MetaBatchResponse res) {
+	public static List<FileMetaWithExtra1> fromBatchResponse(MetaBatchResponse res) {
 		List<MetaBatchResponse.Meta> resList = res.getList();
 		if (resList == null || resList.isEmpty())
 			return Collections.emptyList();
@@ -36,8 +35,7 @@ public class FileMetaWithExtra1 extends FileMeta {
 		return metas;
 	}
 
-	private static FileMetaWithExtra1 fromResponseMeta(
-			MetaBatchResponse.Meta resMeta) {
+	private static FileMetaWithExtra1 fromResponseMeta(MetaBatchResponse.Meta resMeta) {
 		FileMetaWithExtra1 meta = new FileMetaWithExtra1();
 		meta.fsID = resMeta.getFs_id();
 		meta.path = resMeta.getPath();
@@ -78,9 +76,8 @@ public class FileMetaWithExtra1 extends FileMeta {
 
 	@Override
 	public String toString() {
-		return "Meta [\n\tfs_id=" + fsID + "\n\tpath=" + path + "\n\tctime="
-				+ ctime + "\n\tmtime=" + mtime + "\n\tblock_list="
-				+ getBlockList() + "\n\tsize=" + size + "\n\tisdir=" + isDir
+		return "Meta [\n\tfs_id=" + fsID + "\n\tpath=" + path + "\n\tctime=" + ctime + "\n\tmtime=" + mtime
+				+ "\n\tblock_list=" + getBlockList() + "\n\tsize=" + size + "\n\tisdir=" + isDir
 				+ "\n\tifhassubdir=" + hasSubdir + "\n]";
 	}
 

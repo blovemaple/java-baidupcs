@@ -15,7 +15,7 @@ public class MoveBatchOrCopyBatchParam {
 	 * 新建一个实例。
 	 * 
 	 * @param list
-	 *            源文件地址和目标文件地址对应的列表。
+	 *             源文件地址和目标文件地址对应的列表。
 	 */
 	public MoveBatchOrCopyBatchParam(List<FromTo> list) {
 		this.list = list;

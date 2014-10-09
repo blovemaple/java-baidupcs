@@ -30,7 +30,7 @@ public class BaiduPcsBasicFileAttributeView implements BasicFileAttributeView {
 	private final BaiduPcsPath path;
 	private final String pathServiceStr;
 
-	public BaiduPcsBasicFileAttributeView(BaiduPcsPath path) {
+	BaiduPcsBasicFileAttributeView(BaiduPcsPath path) {
 		this.path = path;
 		this.pathServiceStr = path.toServiceString();
 		this.service = path.getFileSystem().getFileStore().getService();
@@ -45,22 +45,19 @@ public class BaiduPcsBasicFileAttributeView implements BasicFileAttributeView {
 	public BasicFileAttributes readAttributes() throws IOException {
 		try {
 			FileMetaWithExtra1 meta = service.meta(pathServiceStr);
-			return new BaiduPcsBasicFileAttributes(meta.getCtime() * 1000,
-					meta.getMtime() * 1000, meta.isDir(), meta.getSize(),
-					meta.getFsID());
+			return new BaiduPcsBasicFileAttributes(meta.getCtime() * 1000, meta.getMtime() * 1000, meta.isDir(),
+					meta.getSize(), meta.getFsID());
 		} catch (BaiduPcsFileNotExistsException e) {
 			throw new NoSuchFileException(path.toString());
 		}
 	}
 
 	@Override
-	public void setTimes(FileTime lastModifiedTime, FileTime lastAccessTime,
-			FileTime createTime) throws IOException {
+	public void setTimes(FileTime lastModifiedTime, FileTime lastAccessTime, FileTime createTime) throws IOException {
 		// Not support, do nothing.
 	}
 
-	public Map<String, Object> readAttributes(String[] attrNameArray)
-			throws IOException {
+	public Map<String, Object> readAttributes(String[] attrNameArray) throws IOException {
 		if (attrNameArray.length == 0)
 			return Collections.emptyMap();
 
@@ -97,8 +94,7 @@ public class BaiduPcsBasicFileAttributeView implements BasicFileAttributeView {
 				value = attrs.fileKey();
 				break;
 			default:
-				throw new IllegalArgumentException("Unrecognized attr name: "
-						+ attrName);
+				throw new IllegalArgumentException("Unrecognized attr name: " + attrName);
 			}
 			res.put(attrName, value);
 		}

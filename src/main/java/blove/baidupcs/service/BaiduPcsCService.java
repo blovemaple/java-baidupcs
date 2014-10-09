@@ -40,28 +40,28 @@ public interface BaiduPcsCService {
 	 * 如需支持超大文件（>2G）的断点续传，请参考下面的“分片文件上传”方法。
 	 * 
 	 * @param method
-	 *            固定值，upload。
+	 *             固定值，upload。
 	 * @param accessToken
-	 *            开发者准入标识。
+	 *             开发者准入标识。
 	 * @param path
-	 *            上传文件路径（含上传的文件名称)。<br>
-	 *            注意：<br>
-	 *            <li>路径长度限制为1000<br> <li>路径中不能包含以下字符：\\ ? | " > < : *<br> <li>
-	 *            文件名或路径名开头结尾不能是“.”或空白字符，空白字符包括: \r, \n, \t, 空格, \0, \x0B
+	 *             上传文件路径（含上传的文件名称)。<br>
+	 *             注意：<br>
+	 *             <li>路径长度限制为1000<br> <li>路径中不能包含以下字符：\\ ? | " > < : *<br> <li>
+	 *             文件名或路径名开头结尾不能是“.”或空白字符，空白字符包括: \r, \n, \t, 空格, \0, \x0B
 	 * @param file
-	 *            上传文件的内容。API要求fileName值不能为null。
+	 *             上传文件的内容。API要求fileName值不能为null。
 	 * @param ondup
-	 *            可选参数。overwrite：表示覆盖同名文件；newcopy：表示生成文件副本并进行重命名，命名规则为“文件名_日期.后缀”。
+	 *             可选参数。overwrite：表示覆盖同名文件；newcopy：表示生成文件副本并进行重命名，命名规则为“文件名_日期.
+	 *             后缀”。
 	 * @return
 	 * @throws Throwable
-	 *             ErrorHandler可能返回的任何异常或错误
+	 *              ErrorHandler可能返回的任何异常或错误
 	 */
 	@Multipart
 	@POST("/file")
-	CreateFileResponse upload(@Query("method") String method,
-			@Query("access_token") String accessToken,
-			@Query("path") String path, @Part("file") TypedOutput file,
-			@Query("ondup") String ondup) throws Throwable;
+	CreateFileResponse upload(@Query("method") String method, @Query("access_token") String accessToken,
+			@Query("path") String path, @Part("file") TypedOutput file, @Query("ondup") String ondup)
+			throws Throwable;
 
 	/**
 	 * 百度PCS服务支持每次直接上传最大2G的单个文件。<br>
@@ -71,21 +71,19 @@ public interface BaiduPcsCService {
 	 * 除此之外，如果应用中需要支持断点续传的功能，也可以通过分片上传文件并调用createsuperfile接口的方式实现。
 	 * 
 	 * @param method
-	 *            固定值，upload。
+	 *             固定值，upload。
 	 * @param accessToken
-	 *            开发者准入标识。
+	 *             开发者准入标识。
 	 * @param type
-	 *            固定值，tmpfile。
+	 *             固定值，tmpfile。
 	 * @param file
-	 *            上传文件的内容。API要求fileName值不能为null。
+	 *             上传文件的内容。API要求fileName值不能为null。
 	 * @return
 	 * @throws Throwable
-	 *             ErrorHandler可能返回的任何异常或错误
+	 *              ErrorHandler可能返回的任何异常或错误
 	 */
 	@Multipart
 	@POST("/file")
-	UploadFileBlockResponse uploadBlock(@Query("method") String method,
-			@Query("access_token") String accessToken,
-			@Query("type") String type, @Part("file") TypedOutput file)
-			throws Throwable;
+	UploadFileBlockResponse uploadBlock(@Query("method") String method, @Query("access_token") String accessToken,
+			@Query("type") String type, @Part("file") TypedOutput file) throws Throwable;
 }

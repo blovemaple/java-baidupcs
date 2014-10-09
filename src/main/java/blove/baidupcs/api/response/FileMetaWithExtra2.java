@@ -70,9 +70,8 @@ public class FileMetaWithExtra2 extends FileMeta {
 
 	@Override
 	public String toString() {
-		return "FileInfo [\n\tfs_id=" + fsID + "\n\tpath=" + path
-				+ "\n\tctime=" + ctime + "\n\tmtime=" + mtime + "\n\tsize="
-				+ size + "\n\tmd5=" + md5 + "\n\tisdir=" + isDir + "\n]";
+		return "FileInfo [\n\tfs_id=" + fsID + "\n\tpath=" + path + "\n\tctime=" + ctime + "\n\tmtime=" + mtime
+				+ "\n\tsize=" + size + "\n\tmd5=" + md5 + "\n\tisdir=" + isDir + "\n]";
 	}
 
 }

@@ -15,7 +15,7 @@ public class PathListParam {
 	 * 新建一个实例。
 	 * 
 	 * @param list
-	 *            路径列表
+	 *             路径列表
 	 */
 	public PathListParam(List<Path> list) {
 		this.list = list;
@@ -42,7 +42,7 @@ public class PathListParam {
 		 * 新建一个实例。
 		 * 
 		 * @param path
-		 *            路径
+		 *             路径
 		 */
 		public Path(String path) {
 			this.path = path;

@@ -26,8 +26,8 @@ public class TableOperationRasponse extends BasicResponse {
 
 	@Override
 	public String toString() {
-		return "TableOperationRasponse [\n\tapp_id=" + app_id + "\n\ttable="
-				+ table + "\n\tgetRequest_id()=" + getRequest_id() + "\n]";
+		return "TableOperationRasponse [\n\tapp_id=" + app_id + "\n\ttable=" + table + "\n\tgetRequest_id()="
+				+ getRequest_id() + "\n]";
 	}
 
 }

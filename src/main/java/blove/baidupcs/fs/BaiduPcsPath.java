@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.ProviderMismatchException;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchEvent.Modifier;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +40,42 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 		this.items = items;
 	}
 
+	/**
+	 * 将pcs服务中的路径字符串转换为实例。
+	 * 
+	 * @param fs
+	 *             文件系统
+	 * @param servicePathStr
+	 *             路径字符串
+	 * @return 实例
+	 */
+	static BaiduPcsPath fromServicePathString(BaiduPcsFileSystem fs, String servicePathStr) {
+		String[] pathItems;
+		if (servicePathStr.startsWith("/")) {
+			// 绝对路径
+			pathItems = servicePathStr.substring(1).split("/");
+			if (pathItems.length == fs.getDir().length) {
+				if (Arrays.equals(pathItems, fs.getDir())) {
+					// 根目录
+					return fs.getRootDirectory();
+				}
+			} else if (pathItems.length > fs.getDir().length) {
+				List<String> pathItemList = Arrays.asList(pathItems);
+				if (pathItemList.subList(0, fs.getDir().length).equals(Arrays.asList(fs.getDir()))) {
+					// 非根目录
+					return new BaiduPcsPath(fs, true,
+							pathItemList.subList(fs.getDir().length, pathItemList.size()));
+				}
+			}
+			// 不合法的绝对路径（前缀与文件系统所在目录路径不一致）
+			throw new IllegalArgumentException("Illegal servicePathStr: " + servicePathStr);
+		} else {
+			// 相对路径
+			pathItems = servicePathStr.split("/");
+			return new BaiduPcsPath(fs, false, Arrays.asList(pathItems));
+		}
+	}
+
 	@Override
 	public BaiduPcsFileSystem getFileSystem() {
 		return fs;
@@ -58,8 +96,7 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 		if (items.isEmpty())
 			return null;
 
-		return new BaiduPcsPath(fs, false, Collections.singletonList(items
-				.get(items.size() - 1)));
+		return new BaiduPcsPath(fs, false, Collections.singletonList(items.get(items.size() - 1)));
 	}
 
 	@Override
@@ -68,8 +105,7 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 			return null;
 		if (!absolute && items.size() <= 1)
 			return null;
-		return new BaiduPcsPath(fs, absolute,
-				items.subList(0, items.size() - 1));
+		return new BaiduPcsPath(fs, absolute, items.subList(0, items.size() - 1));
 	}
 
 	@Override
@@ -79,8 +115,7 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 
 	@Override
 	public Path getName(int index) {
-		return new BaiduPcsPath(fs, false, Collections.singletonList(items
-				.get(index)));
+		return new BaiduPcsPath(fs, false, Collections.singletonList(items.get(index)));
 	}
 
 	@Override
@@ -118,8 +153,7 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 				return false;
 			}
 		} else {
-			return otherPath.items.equals(items.subList(items.size()
-					- otherPath.items.size(), items.size()));
+			return otherPath.items.equals(items.subList(items.size() - otherPath.items.size(), items.size()));
 		}
 	}
 
@@ -157,8 +191,7 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 	@Override
 	public BaiduPcsPath resolve(Path other) {
 		if (!other.getFileSystem().equals(fs)) {
-			throw new IllegalArgumentException(
-					"Cannot resolve paths in different file systems.");
+			throw new IllegalArgumentException("Cannot resolve paths in different file systems.");
 		}
 
 		BaiduPcsPath otherPath = (BaiduPcsPath) other;
@@ -172,8 +205,7 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 			else
 				return otherPath;
 		} else {
-			List<String> newItems = new ArrayList<>(items.size()
-					+ otherPath.items.size());
+			List<String> newItems = new ArrayList<>(items.size() + otherPath.items.size());
 			newItems.addAll(items);
 			newItems.addAll(otherPath.items);
 			return new BaiduPcsPath(fs, absolute, newItems);
@@ -183,20 +215,16 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 	@Override
 	public BaiduPcsPath relativize(Path other) {
 		if (!other.getFileSystem().equals(fs)) {
-			throw new IllegalArgumentException(
-					"Cannot resolve paths in different file systems.");
+			throw new IllegalArgumentException("Cannot resolve paths in different file systems.");
 		}
 
 		BaiduPcsPath otherPath = (BaiduPcsPath) other;
 		if (otherPath.absolute != absolute)
-			throw new IllegalArgumentException(
-					"Cannot relativize paths with different absolutenesses.");
+			throw new IllegalArgumentException("Cannot relativize paths with different absolutenesses.");
 
 		int firstDiffIndex;
-		for (firstDiffIndex = 0; firstDiffIndex < items.size()
-				&& firstDiffIndex < otherPath.items.size(); firstDiffIndex++) {
-			if (!otherPath.items.get(firstDiffIndex).equals(
-					items.get(firstDiffIndex)))
+		for (firstDiffIndex = 0; firstDiffIndex < items.size() && firstDiffIndex < otherPath.items.size(); firstDiffIndex++) {
+			if (!otherPath.items.get(firstDiffIndex).equals(items.get(firstDiffIndex)))
 				break;
 		}
 
@@ -247,10 +275,15 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 		return path;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public WatchKey register(WatchService watcher, Kind<?>[] events,
-			Modifier... modifiers) throws IOException {
-		throw new UnsupportedOperationException("Watching is not supported.");
+	public WatchKey register(WatchService watcher, Kind<?>[] events, Modifier... modifiers) throws IOException {
+		if (watcher == null)
+			throw new NullPointerException();
+		if (!(watcher instanceof BaiduPcsWatchService))
+			throw new ProviderMismatchException();
+
+		return ((BaiduPcsWatchService) watcher).register(this, (Kind<Path>[]) events, modifiers);
 	}
 
 	@Override
@@ -259,7 +292,7 @@ public class BaiduPcsPath extends AbstractNonDefaultFSPath {
 	}
 
 	/**
-	 * 返回以应用目录为根目录的路径字符串。
+	 * 返回以文件系统根目录为根目录的路径字符串。
 	 * 
 	 * @return
 	 */

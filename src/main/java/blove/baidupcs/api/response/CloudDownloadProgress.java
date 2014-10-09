@@ -18,36 +18,31 @@ public class CloudDownloadProgress extends CloudDownloadBasic {
 	private long startTime;
 	private long finishTime;
 
-	public static CloudDownloadProgress fromSingleQueryResponse(
-			CloudDownloadQueryTaskResponse response) {
+	public static CloudDownloadProgress fromSingleQueryResponse(CloudDownloadQueryTaskResponse response) {
 		Map<String, QueryTaskInfo> taskInfos = response.getTask_info();
 		if (taskInfos == null || taskInfos.isEmpty())
 			return null;
 		if (taskInfos.size() > 1)
 			throw new IllegalArgumentException();
 
-		Map.Entry<String, QueryTaskInfo> singleEntry = taskInfos.entrySet()
-				.iterator().next();
+		Map.Entry<String, QueryTaskInfo> singleEntry = taskInfos.entrySet().iterator().next();
 		return fromQueryTaskInfo(singleEntry.getKey(), singleEntry.getValue());
 	}
 
-	public static Map<String, CloudDownloadProgress> fromBatchQueryResponse(
-			CloudDownloadQueryTaskResponse response) {
+	public static Map<String, CloudDownloadProgress> fromBatchQueryResponse(CloudDownloadQueryTaskResponse response) {
 		Map<String, QueryTaskInfo> taskInfos = response.getTask_info();
 		if (taskInfos == null || taskInfos.isEmpty())
 			return Collections.emptyMap();
 
 		Map<String, CloudDownloadProgress> ret = new HashMap<>();
 		for (Map.Entry<String, QueryTaskInfo> entry : taskInfos.entrySet()) {
-			CloudDownloadProgress meta = fromQueryTaskInfo(entry.getKey(),
-					entry.getValue());
+			CloudDownloadProgress meta = fromQueryTaskInfo(entry.getKey(), entry.getValue());
 			ret.put(meta.getTaskID(), meta);
 		}
 		return ret;
 	}
 
-	private static CloudDownloadProgress fromQueryTaskInfo(String taskID,
-			QueryTaskInfo info) {
+	private static CloudDownloadProgress fromQueryTaskInfo(String taskID, QueryTaskInfo info) {
 		CloudDownloadProgress ret = new CloudDownloadProgress();
 		ret.taskID = taskID;
 		ret.result = Result.values()[info.getResult()];
@@ -98,11 +93,9 @@ public class CloudDownloadProgress extends CloudDownloadBasic {
 
 	@Override
 	public String toString() {
-		return "CloudDownloadProgress [\n\ttaskID=" + taskID + "\n\tresult="
-				+ result + "\n\tstatus=" + status + "\n\tcreateTime="
-				+ createTime + "\n\tfileSize=" + fileSize + "\n\tfinishedSize="
-				+ finishedSize + "\n\tstartTime=" + startTime
-				+ "\n\tfinishTime=" + finishTime + "\n]";
+		return "CloudDownloadProgress [\n\ttaskID=" + taskID + "\n\tresult=" + result + "\n\tstatus=" + status
+				+ "\n\tcreateTime=" + createTime + "\n\tfileSize=" + fileSize + "\n\tfinishedSize=" + finishedSize
+				+ "\n\tstartTime=" + startTime + "\n\tfinishTime=" + finishTime + "\n]";
 	}
 
 }

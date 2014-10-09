@@ -12,18 +12,17 @@ public class BaiduPcsBasicFileAttributes implements BasicFileAttributes {
 
 	/**
 	 * @param creationTime
-	 *            创建时间。单位：毫秒。
+	 *             创建时间。单位：毫秒。
 	 * @param lastModifiedTime
-	 *            最后修改时间。单位：毫秒。
+	 *             最后修改时间。单位：毫秒。
 	 * @param isDirectory
-	 *            是否是目录
+	 *             是否是目录
 	 * @param size
-	 *            大小。单位：字节。
+	 *             大小。单位：字节。
 	 * @param fsId
-	 *            作为fileKey
+	 *             作为fileKey
 	 */
-	BaiduPcsBasicFileAttributes(long creationTime, long lastModifiedTime,
-			boolean isDirectory, long size, long fsId) {
+	BaiduPcsBasicFileAttributes(long creationTime, long lastModifiedTime, boolean isDirectory, long size, long fsId) {
 		this.creationTime = FileTime.fromMillis(creationTime);
 		this.lastModifiedTime = FileTime.fromMillis(lastModifiedTime);
 		this.isDirectory = isDirectory;
@@ -78,10 +77,9 @@ public class BaiduPcsBasicFileAttributes implements BasicFileAttributes {
 
 	@Override
 	public String toString() {
-		return "BaiduPcsBasicFileAttributes [\n\tcreationTime=" + creationTime
-				+ "\n\tlastModifiedTime=" + lastModifiedTime
-				+ "\n\tisDirectory=" + isDirectory + "\n\tsize=" + size
-				+ "\n\tfsId=" + fsId + "\n]";
+		return "BaiduPcsBasicFileAttributes [\n\tcreationTime=" + creationTime + "\n\tlastModifiedTime="
+				+ lastModifiedTime + "\n\tisDirectory=" + isDirectory + "\n\tsize=" + size + "\n\tfsId=" + fsId
+				+ "\n]";
 	}
 
 }

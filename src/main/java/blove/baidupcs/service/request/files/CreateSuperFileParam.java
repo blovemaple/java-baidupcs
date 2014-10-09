@@ -15,7 +15,7 @@ public class CreateSuperFileParam {
 	 * 新建一个实例。
 	 * 
 	 * @param block_list
-	 *            子文件内容的MD5列表。
+	 *             子文件内容的MD5列表。
 	 */
 	public CreateSuperFileParam(List<String> block_list) {
 		this.block_list = block_list;

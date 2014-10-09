@@ -7,9 +7,9 @@ import java.util.Map;
  * 以指定类型对象为键，存放指定类型对象的缓存，可指定超时时间。
  * 
  * @param <K>
- *            键类型
+ *             键类型
  * @param <V>
- *            值类型
+ *             值类型
  * @author blove
  */
 public class Cache<K, V> {
@@ -22,7 +22,7 @@ public class Cache<K, V> {
 	 * 新建一个实例。
 	 * 
 	 * @param expireTime
-	 *            缓存超时时间。单位：毫秒。
+	 *             缓存超时时间。单位：毫秒。
 	 */
 	public Cache(int expireTime) {
 		this.expireTime = expireTime;
@@ -32,9 +32,9 @@ public class Cache<K, V> {
 	 * 将指定对象以指定键放入缓存。如果键已存在，则会覆盖，并重新计时。
 	 * 
 	 * @param key
-	 *            键
+	 *             键
 	 * @param value
-	 *            值
+	 *             值
 	 */
 	public void put(K key, V value) {
 		keyValues.put(key, value);
@@ -45,7 +45,7 @@ public class Cache<K, V> {
 	 * 获取指定键对应的值。
 	 * 
 	 * @param key
-	 *            键
+	 *             键
 	 * @return 值。如果没有或已超时则返回null。
 	 */
 	public V get(K key) {
@@ -71,7 +71,7 @@ public class Cache<K, V> {
 	 * 删除指定键对应的值。
 	 * 
 	 * @param key
-	 *            键
+	 *             键
 	 */
 	public void remove(K key) {
 		Long time = keyTimes.remove(key);

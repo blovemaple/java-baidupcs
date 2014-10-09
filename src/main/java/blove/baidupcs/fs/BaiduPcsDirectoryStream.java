@@ -18,13 +18,11 @@ public class BaiduPcsDirectoryStream implements DirectoryStream<Path> {
 	private final List<FileMetaWithExtra2> fileInfos;
 	private final BaiduPcsPath dir;
 
-	public BaiduPcsDirectoryStream(BaiduPcsPath dir, Filter<? super Path> filter)
-			throws IOException {
+	BaiduPcsDirectoryStream(BaiduPcsPath dir, Filter<? super Path> filter) throws IOException {
 		try {
 			this.dir = dir;
 
-			BaiduPcs service = ((BaiduPcsFileStore) Files.getFileStore(dir))
-					.getService();
+			BaiduPcs service = ((BaiduPcsFileStore) Files.getFileStore(dir)).getService();
 			if (!service.meta(dir.toServiceString()).isDir())
 				throw new NotDirectoryException(dir.toString());
 			fileInfos = service.list(dir.toServiceString());
@@ -60,8 +58,7 @@ public class BaiduPcsDirectoryStream implements DirectoryStream<Path> {
 
 			@Override
 			public void remove() {
-				throw new UnsupportedOperationException(
-						"Remove in directory stream iterator is not supported.");
+				throw new UnsupportedOperationException("Remove in directory stream iterator is not supported.");
 			}
 		};
 	}

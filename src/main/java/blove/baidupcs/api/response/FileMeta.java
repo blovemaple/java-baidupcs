@@ -1,6 +1,5 @@
 package blove.baidupcs.api.response;
 
-
 /**
  * 文件或目录的元信息。
  * 

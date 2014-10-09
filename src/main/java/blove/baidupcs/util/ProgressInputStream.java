@@ -20,14 +20,13 @@ public class ProgressInputStream extends FilterInputStream {
 
 	private double lastRate = -1;
 
-	private List<ProgressObserver> observers = Collections
-			.synchronizedList(new LinkedList<ProgressObserver>());
+	private List<ProgressObserver> observers = Collections.synchronizedList(new LinkedList<ProgressObserver>());
 
 	/**
 	 * 新建一个实例。总长度按照已读长度加上{@link #available()}的大小计算。
 	 * 
 	 * @param in
-	 *            底层输入流
+	 *             底层输入流
 	 */
 	public ProgressInputStream(InputStream in) {
 		this(in, -1);
@@ -37,9 +36,9 @@ public class ProgressInputStream extends FilterInputStream {
 	 * 新建一个实例。
 	 * 
 	 * @param in
-	 *            底层输入流
+	 *             底层输入流
 	 * @param length
-	 *            总长度。如果指定负数，则按照已读长度加上{@link #available()}的大小计算。
+	 *             总长度。如果指定负数，则按照已读长度加上{@link #available()}的大小计算。
 	 */
 	public ProgressInputStream(InputStream in, long length) {
 		super(in);
@@ -50,7 +49,7 @@ public class ProgressInputStream extends FilterInputStream {
 	 * 添加一个监视器。
 	 * 
 	 * @param observer
-	 *            监视器
+	 *             监视器
 	 */
 	public void addObserver(ProgressObserver observer) {
 		observers.add(observer);
@@ -60,7 +59,7 @@ public class ProgressInputStream extends FilterInputStream {
 	 * 移除一个监视器。
 	 * 
 	 * @param observer
-	 *            监视器
+	 *             监视器
 	 */
 	public void removeObserver(ProgressObserver observer) {
 		observers.remove(observer);
@@ -100,14 +99,12 @@ public class ProgressInputStream extends FilterInputStream {
 
 	@Override
 	public synchronized void mark(int readlimit) {
-		throw new UnsupportedOperationException(
-				"Mark is unsupported by ProgressInputStream.");
+		throw new UnsupportedOperationException("Mark is unsupported by ProgressInputStream.");
 	}
 
 	@Override
 	public synchronized void reset() throws IOException {
-		throw new UnsupportedOperationException(
-				"Reset is unsupported by ProgressInputStream.");
+		throw new UnsupportedOperationException("Reset is unsupported by ProgressInputStream.");
 	}
 
 	@Override
@@ -121,15 +118,14 @@ public class ProgressInputStream extends FilterInputStream {
 	 * 读取后调用此方法，计数并通知。
 	 * 
 	 * @param byteNum
-	 *            读取的字节数
+	 *             读取的字节数
 	 * @throws IOException
 	 */
 	private synchronized void readed(long byteNum) throws IOException {
 		readLength += byteNum;
 		long length = this.length >= 0 ? this.length : readLength + available();
 
-		double rate = Double.parseDouble(rateFormat.format(readLength
-				/ (double) length));
+		double rate = Double.parseDouble(rateFormat.format(readLength / (double) length));
 		if (rate != lastRate) {
 			synchronized (observers) {
 				for (ProgressObserver observer : observers)

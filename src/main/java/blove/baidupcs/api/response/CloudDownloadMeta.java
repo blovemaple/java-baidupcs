@@ -22,36 +22,31 @@ public class CloudDownloadMeta extends CloudDownloadBasic {
 	private int timeout;
 	private String callback;
 
-	public static CloudDownloadMeta fromSingleQueryResponse(
-			CloudDownloadQueryTaskResponse response) {
+	public static CloudDownloadMeta fromSingleQueryResponse(CloudDownloadQueryTaskResponse response) {
 		Map<String, QueryTaskInfo> taskInfos = response.getTask_info();
 		if (taskInfos == null || taskInfos.isEmpty())
 			return null;
 		if (taskInfos.size() > 1)
 			throw new IllegalArgumentException();
 
-		Map.Entry<String, QueryTaskInfo> singleEntry = taskInfos.entrySet()
-				.iterator().next();
+		Map.Entry<String, QueryTaskInfo> singleEntry = taskInfos.entrySet().iterator().next();
 		return fromQueryTaskInfo(singleEntry.getKey(), singleEntry.getValue());
 	}
 
-	public static Map<String, CloudDownloadMeta> fromBatchQueryResponse(
-			CloudDownloadQueryTaskResponse response) {
+	public static Map<String, CloudDownloadMeta> fromBatchQueryResponse(CloudDownloadQueryTaskResponse response) {
 		Map<String, QueryTaskInfo> taskInfos = response.getTask_info();
 		if (taskInfos == null || taskInfos.isEmpty())
 			return Collections.emptyMap();
 
 		Map<String, CloudDownloadMeta> ret = new HashMap<>();
 		for (Map.Entry<String, QueryTaskInfo> entry : taskInfos.entrySet()) {
-			CloudDownloadMeta meta = fromQueryTaskInfo(entry.getKey(),
-					entry.getValue());
+			CloudDownloadMeta meta = fromQueryTaskInfo(entry.getKey(), entry.getValue());
 			ret.put(meta.getTaskID(), meta);
 		}
 		return ret;
 	}
 
-	private static CloudDownloadMeta fromQueryTaskInfo(String taskID,
-			QueryTaskInfo info) {
+	private static CloudDownloadMeta fromQueryTaskInfo(String taskID, QueryTaskInfo info) {
 		CloudDownloadMeta ret = new CloudDownloadMeta();
 		ret.taskID = taskID;
 		ret.result = Result.values()[info.getResult()];
@@ -65,8 +60,7 @@ public class CloudDownloadMeta extends CloudDownloadBasic {
 		return ret;
 	}
 
-	public static Map<String, CloudDownloadMeta> fromListResponse(
-			CloudDownloadListTaskResponse response) {
+	public static Map<String, CloudDownloadMeta> fromListResponse(CloudDownloadListTaskResponse response) {
 		List<ListTaskInfo> taskInfos = response.getTask_info();
 		if (taskInfos == null || taskInfos.isEmpty())
 			return Collections.emptyMap();
@@ -141,11 +135,9 @@ public class CloudDownloadMeta extends CloudDownloadBasic {
 
 	@Override
 	public String toString() {
-		return "CloudDownloadMeta [\n\ttaskID=" + taskID + "\n\tresult="
-				+ result + "\n\tstatus=" + status + "\n\tcreateTime="
-				+ createTime + "\n\tsourceUrl=" + sourceUrl + "\n\tsavePath="
-				+ savePath + "\n\trateLimit=" + rateLimit + "\n\ttimeout="
-				+ timeout + "\n\tcallback=" + callback + "\n]";
+		return "CloudDownloadMeta [\n\ttaskID=" + taskID + "\n\tresult=" + result + "\n\tstatus=" + status
+				+ "\n\tcreateTime=" + createTime + "\n\tsourceUrl=" + sourceUrl + "\n\tsavePath=" + savePath
+				+ "\n\trateLimit=" + rateLimit + "\n\ttimeout=" + timeout + "\n\tcallback=" + callback + "\n]";
 	}
 
 }

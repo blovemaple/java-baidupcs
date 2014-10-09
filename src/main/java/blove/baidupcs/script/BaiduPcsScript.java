@@ -91,21 +91,19 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * 新建一个实例。
 	 * 
 	 * @param factory
-	 *            工厂
+	 *             工厂
 	 */
 	protected BaiduPcsScript(BaiduPcsScriptFactory factory) {
 		this.factory = factory;
 	}
 
 	@Override
-	public Object eval(String script, ScriptContext context)
-			throws ScriptException {
+	public Object eval(String script, ScriptContext context) throws ScriptException {
 		return eval(new StringReader(script), context);
 	}
 
 	@Override
-	public Object eval(Reader reader, ScriptContext context)
-			throws ScriptException {
+	public Object eval(Reader reader, ScriptContext context) throws ScriptException {
 		try {
 			int lineNumber = 1;
 			try {
@@ -117,19 +115,15 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 					// 提取命令名和参数
 					String[] nameAndArgs = line.trim().split("\\s+", 2);
 					String name = nameAndArgs[0];
-					String argsStr = nameAndArgs.length > 1 ? nameAndArgs[1]
-							: null;
+					String argsStr = nameAndArgs.length > 1 ? nameAndArgs[1] : null;
 
 					// 根据注解找到合适的方法
 					Method rightMethod = null;
-					for (Method method : BaiduPcsScript.class
-							.getDeclaredMethods()) {
-						Command commandAnno = method
-								.getAnnotation(Command.class);
+					for (Method method : BaiduPcsScript.class.getDeclaredMethods()) {
+						Command commandAnno = method.getAnnotation(Command.class);
 						if (commandAnno != null) {
 							if (name.equals(method.getName())
-									|| Arrays.asList(commandAnno.aliases())
-											.contains(name)) {
+									|| Arrays.asList(commandAnno.aliases()).contains(name)) {
 								rightMethod = method;
 								break;
 							}
@@ -138,8 +132,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 
 					if (rightMethod == null) {
 						// 没找到命令方法
-						throw new ScriptException("Unrecognized command: "
-								+ line, null, lineNumber);
+						throw new ScriptException("Unrecognized command: " + line, null, lineNumber);
 					}
 
 					// 将命令参数分解成方法参数
@@ -147,21 +140,18 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 					Object[] params = new Object[paramCount];
 					params[0] = context;
 					if (paramCount > 1) {
-						String[] args = argsStr == null ? new String[] {}
-								: argsStr.split("\\s+", paramCount - 1);
+						String[] args = argsStr == null ? new String[] {} : argsStr.split("\\s+", paramCount - 1);
 						System.arraycopy(args, 0, params, 1, args.length);
 					}
 
 					// 设置context，调用命令方法
-					context.setAttribute(LINE_NUMBER, lineNumber,
-							ScriptContext.ENGINE_SCOPE);
+					context.setAttribute(LINE_NUMBER, lineNumber, ScriptContext.ENGINE_SCOPE);
 					rightMethod.invoke(this, params);
 
 					lineNumber++;
 				}
 			} catch (IOException e) {
-				throw new ScriptException("Failed to read script.", null,
-						lineNumber);
+				throw new ScriptException("Failed to read script.", null, lineNumber);
 			} catch (InvocationTargetException e) {
 				handleInvocationTargetException(e, lineNumber);
 			} catch (Exception e) {
@@ -176,8 +166,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		return null;
 	}
 
-	private void handleInvocationTargetException(InvocationTargetException e,
-			int lineNumber) throws ScriptException {
+	private void handleInvocationTargetException(InvocationTargetException e, int lineNumber) throws ScriptException {
 		Throwable cause = e.getCause();
 		if (cause != null) {
 			if (cause instanceof ScriptException)
@@ -192,8 +181,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 				ErrorResponse errorRes = be.getErrorResponse();
 				if (errorRes != null)
 					message = errorRes.getError_msg();
-				else if (be.getHttpReason() != null
-						&& !be.getHttpReason().isEmpty())
+				else if (be.getHttpReason() != null && !be.getHttpReason().isEmpty())
 					message = be.getHttpReason();
 
 				if (message != null)
@@ -254,8 +242,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command
-	private void open(ScriptContext context, String accessToken, String appName)
-			throws BaiduPcsException, IOException, ScriptException {
+	private void open(ScriptContext context, String accessToken, String appName) throws BaiduPcsException,
+			IOException, ScriptException {
 		BaiduPcs pcs = new BaiduPcs(accessToken, appName, LogLevel.BASIC);
 		pcs.list("/");// 验证是否有权限
 		context.setAttribute(CURR_DIR, "/", ScriptContext.ENGINE_SCOPE);// 重置目录
@@ -264,8 +252,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command
-	private void cd(ScriptContext context, String path) throws ScriptException,
-			BaiduPcsException, IOException {
+	private void cd(ScriptContext context, String path) throws ScriptException, BaiduPcsException, IOException {
 		BaiduPcs pcs = checkBaiduPcs(context);
 		if (path == null || path.isEmpty())
 			return;
@@ -277,8 +264,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command
-	private void cdup(ScriptContext context) throws ScriptException,
-			BaiduPcsException, IOException {
+	private void cdup(ScriptContext context) throws ScriptException, BaiduPcsException, IOException {
 		checkBaiduPcs(context);
 		String crtPath = getCurrDir(context);
 		int slashIndex = crtPath.lastIndexOf("/");
@@ -298,25 +284,21 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command
-	private void quota(ScriptContext context) throws ScriptException,
-			BaiduPcsException, IOException {
+	private void quota(ScriptContext context) throws ScriptException, BaiduPcsException, IOException {
 		BaiduPcs pcs = checkBaiduPcs(context);
 		Quota quota = pcs.quota();
 		boolean h = true;// 暂不支持选项
 		PrintWriter out = getOutput(context);
-		out.println("Total:\t"
-				+ (h ? sizeH(quota.getQuota()) : quota.getQuota()));
+		out.println("Total:\t" + (h ? sizeH(quota.getQuota()) : quota.getQuota()));
 		out.println("Used:\t" + (h ? sizeH(quota.getUsed()) : quota.getUsed()));
 		long free = quota.getQuota() - quota.getUsed();
 		out.println("Free:\t" + (h ? sizeH(free) : free));
 	}
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm:ss");
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Command(aliases = { "ls" })
-	private void list(ScriptContext context, String path)
-			throws ScriptException, BaiduPcsException, IOException {
+	private void list(ScriptContext context, String path) throws ScriptException, BaiduPcsException, IOException {
 		BaiduPcs pcs = checkBaiduPcs(context);
 		String absolutePath = getAbsolutePath(context, path);
 
@@ -345,15 +327,15 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * 
 	 * @param context
 	 * @param localFile
-	 *            本地文件/目录路径
+	 *             本地文件/目录路径
 	 * @param pcsPath
-	 *            pcs中的文件/目录或上传到的目录路径。默认为当前目录下同名文件/目录。
+	 *             pcs中的文件/目录或上传到的目录路径。默认为当前目录下同名文件/目录。
 	 * @throws ScriptException
 	 * @throws IOException
 	 */
 	@Command(aliases = { "up" })
-	private void upload(final ScriptContext context, final String localFile,
-			String pcsPath) throws ScriptException, IOException {
+	private void upload(final ScriptContext context, final String localFile, String pcsPath) throws ScriptException,
+			IOException {
 		final PrintWriter out = getOutput(context);
 		PrintWriter errorOut = getErrorOutput(context);
 
@@ -363,8 +345,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 
 		// 如果absolutePcsPath是已存在的目录，则上传到此目录下。否则认为是上传为此名的文件/目录。
 		absolutePcsPath = genePcsFilePath(context, absolutePcsPath,
-				localOriPath.equals(localOriPath.getRoot()) ? "ROOT"
-						: localOriPath.getFileName().toString());
+				localOriPath.equals(localOriPath.getRoot()) ? "ROOT" : localOriPath.getFileName().toString());
 		if (absolutePcsPath == null) {
 			out.println("Skip exists file: " + absolutePcsPath);
 			return;
@@ -373,24 +354,20 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		final String pcsOriPath = absolutePcsPath;
 
 		if (Files.isDirectory(localOriPath)) {
-			Files.walkFileTree(localOriPath,
-					EnumSet.of(FileVisitOption.FOLLOW_LINKS),
-					Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
+			Files.walkFileTree(localOriPath, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
+					new SimpleFileVisitor<Path>() {
 
 						@Override
-						public FileVisitResult preVisitDirectory(Path dir,
-								BasicFileAttributes attrs) throws IOException {
-							String pcsCurrPath = genePcsPath(localOriPath, dir,
-									pcsOriPath);
+						public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+								throws IOException {
+							String pcsCurrPath = genePcsPath(localOriPath, dir, pcsOriPath);
 							pcs.mkdir(pcsCurrPath);
 							return FileVisitResult.CONTINUE;
 						}
 
 						@Override
-						public FileVisitResult visitFile(Path file,
-								BasicFileAttributes attrs) throws IOException {
-							String pcsCurrPath = genePcsPath(localOriPath,
-									file, pcsOriPath);
+						public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+							String pcsCurrPath = genePcsPath(localOriPath, file, pcsOriPath);
 							try {
 								uploadFile(context, file, pcsCurrPath);
 							} catch (ScriptException e) {
@@ -415,8 +392,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * @param pcsOriPath
 	 * @return
 	 */
-	private String genePcsPath(Path localOriPath, Path localCurrPath,
-			String pcsOriPath) {
+	private String genePcsPath(Path localOriPath, Path localCurrPath, String pcsOriPath) {
 		StringBuilder pcsCurrPath = new StringBuilder(pcsOriPath);
 		for (Path pathItem : localOriPath.relativize(localCurrPath)) {
 			if (pcsCurrPath.lastIndexOf("/") != pcsCurrPath.length() - 1)
@@ -426,8 +402,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		return pcsCurrPath.toString();
 	}
 
-	private void uploadFile(final ScriptContext context, Path localPath,
-			final String absolutePcsPath) throws ScriptException, IOException {
+	private void uploadFile(final ScriptContext context, Path localPath, final String absolutePcsPath)
+			throws ScriptException, IOException {
 		final PrintWriter out = getOutput(context);
 
 		// 先尝试秒传，失败再以普通方式上传
@@ -442,12 +418,10 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		BaiduPcs pcs = checkBaiduPcs(context);
 
 		// 设一个允许显示进度的标志。避免在监视器多线程通知的情况下出问题，比如上传完了进度还没显示完。
-		final String RATE_PRINT_ALLOWED = "blove.baidupcs.rate_print_allowed."
-				+ Thread.currentThread().getId();
+		final String RATE_PRINT_ALLOWED = "blove.baidupcs.rate_print_allowed." + Thread.currentThread().getId();
 		context.setAttribute(RATE_PRINT_ALLOWED, 1, ScriptContext.ENGINE_SCOPE);
 
-		try (InputStream in = new BufferedInputStream(
-				Files.newInputStream(localPath))) {
+		try (InputStream in = new BufferedInputStream(Files.newInputStream(localPath))) {
 			long length = Files.size(localPath);
 			ProgressInputStream pin = new ProgressInputStream(in, length);
 			pin.addObserver(new ProgressObserver() {
@@ -455,8 +429,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 				@Override
 				public void update(ProgressInputStream stream, double rate) {
 					if (context.getAttribute(RATE_PRINT_ALLOWED) != null) {
-						out.print("\r" + (int) (rate * 100) + "%   \t"
-								+ absolutePcsPath);
+						out.print("\r" + (int) (rate * 100) + "%   \t" + absolutePcsPath);
 						out.flush();
 					}
 				}
@@ -474,16 +447,15 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * 
 	 * @param context
 	 * @param localPath
-	 *            文件本地路径
+	 *             文件本地路径
 	 * @param absolutePcsPath
-	 *            上传为文件路径
+	 *             上传为文件路径
 	 * @return 成功返回true；失败返回false。
 	 * @throws IOException
 	 * @throws ScriptException
 	 */
-	private boolean tryRapidUploadFile(final ScriptContext context,
-			Path localPath, final String absolutePcsPath) throws IOException,
-			ScriptException {
+	private boolean tryRapidUploadFile(final ScriptContext context, Path localPath, final String absolutePcsPath)
+			throws IOException, ScriptException {
 		if (Files.size(localPath) <= 1024 * 256)
 			// 256K及以下的文件不使用快速上传（REST API的规定）
 			return false;
@@ -491,8 +463,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		BaiduPcs pcs = checkBaiduPcs(context);
 
 		RapidUploadRecogInfo param;
-		try (InputStream in = new BufferedInputStream(
-				Files.newInputStream(localPath))) {
+		try (InputStream in = new BufferedInputStream(Files.newInputStream(localPath))) {
 			param = RapidUploadRecogInfo.fromInputStream(in);
 		}
 		if (param == null)
@@ -508,9 +479,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command(aliases = { "down" })
-	private void download(ScriptContext context, String pcsPath,
-			String localFile) throws ScriptException, BaiduPcsException,
-			IOException {
+	private void download(ScriptContext context, String pcsPath, String localFile) throws ScriptException,
+			BaiduPcsException, IOException {
 		PrintWriter out = getOutput(context);
 
 		BaiduPcs pcs = checkBaiduPcs(context);
@@ -518,8 +488,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		String pcsOriPath = getAbsolutePath(context, pcsPath);
 
 		// 如果localPath是已存在的目录，则下载到此目录下。否则认为是下载为此名的文件/目录。
-		String pcsFileName = pcsOriPath.equals("/") ? "ROOT" : pcsOriPath
-				.substring(pcsOriPath.lastIndexOf("/") + 1);
+		String pcsFileName = pcsOriPath.equals("/") ? "ROOT" : pcsOriPath.substring(pcsOriPath.lastIndexOf("/") + 1);
 		localPath = geneLocalFilePath(context, localPath, pcsFileName);
 		if (localPath == null) {
 			out.println("Skip exists file: " + localPath);
@@ -533,9 +502,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 			downloadFile(context, pcsOriPath, localPath);
 	}
 
-	private void downloadDir(ScriptContext context, String pcsAbsolutePath,
-			Path localPath) throws BaiduPcsException, IOException,
-			ScriptException {
+	private void downloadDir(ScriptContext context, String pcsAbsolutePath, Path localPath) throws BaiduPcsException,
+			IOException, ScriptException {
 		Files.createDirectory(localPath);
 
 		BaiduPcs pcs = checkBaiduPcs(context);
@@ -549,8 +517,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		}
 	}
 
-	private void downloadFile(final ScriptContext context,
-			String pcsAbsolutePath, final Path localPath)
+	private void downloadFile(final ScriptContext context, String pcsAbsolutePath, final Path localPath)
 			throws ScriptException, BaiduPcsException, IOException {
 		final PrintWriter out = getOutput(context);
 
@@ -558,13 +525,11 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		TypedInput typedInput = pcs.download(pcsAbsolutePath);
 
 		// 设一个允许显示进度的标志。避免在监视器多线程通知的情况下出问题，比如上传完了进度还没显示完。
-		final String RATE_PRINT_ALLOWED = "blove.baidupcs.rate_print_allowed."
-				+ Thread.currentThread().getId();
+		final String RATE_PRINT_ALLOWED = "blove.baidupcs.rate_print_allowed." + Thread.currentThread().getId();
 		context.setAttribute(RATE_PRINT_ALLOWED, 1, ScriptContext.ENGINE_SCOPE);
 
 		try (InputStream in = typedInput.in()) {
-			ProgressInputStream pin = new ProgressInputStream(in,
-					typedInput.length());
+			ProgressInputStream pin = new ProgressInputStream(in, typedInput.length());
 			pin.addObserver(new ProgressObserver() {
 
 				@Override
@@ -584,32 +549,29 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command
-	private void rm(ScriptContext context, String path)
-			throws BaiduPcsException, IOException, ScriptException {
+	private void rm(ScriptContext context, String path) throws BaiduPcsException, IOException, ScriptException {
 		BaiduPcs baiduPcs = checkBaiduPcs(context);
 		String absolutePath = getAbsolutePath(context, path);
 		baiduPcs.delete(absolutePath);
 	}
 
 	@Command
-	private void search(ScriptContext context, String keyword, String dir)
-			throws BaiduPcsException, IOException, ScriptException {
+	private void search(ScriptContext context, String keyword, String dir) throws BaiduPcsException, IOException,
+			ScriptException {
 		innerSearch(context, keyword, dir, false);
 	}
 
 	@Command
-	private void searchr(ScriptContext context, String keyword, String dir)
-			throws BaiduPcsException, IOException, ScriptException {
+	private void searchr(ScriptContext context, String keyword, String dir) throws BaiduPcsException, IOException,
+			ScriptException {
 		innerSearch(context, keyword, dir, true);
 	}
 
-	private void innerSearch(ScriptContext context, String keyword, String dir,
-			boolean recursively) throws BaiduPcsException, IOException,
-			ScriptException {
+	private void innerSearch(ScriptContext context, String keyword, String dir, boolean recursively)
+			throws BaiduPcsException, IOException, ScriptException {
 		BaiduPcs baiduPcs = checkBaiduPcs(context);
 		String absolutePath = getAbsolutePath(context, dir);
-		List<? extends FileMeta> files = baiduPcs.search(absolutePath, keyword,
-				recursively);
+		List<? extends FileMeta> files = baiduPcs.search(absolutePath, keyword, recursively);
 
 		PrintWriter out = getOutput(context);
 		for (FileMeta file : files) {
@@ -622,16 +584,16 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * 
 	 * @param context
 	 * @param file
-	 *            文件路径
+	 *             文件路径
 	 * @param charset
-	 *            编码。默认为当前系统默认编码。
+	 *             编码。默认为当前系统默认编码。
 	 * @throws BaiduPcsException
 	 * @throws IOException
 	 * @throws ScriptException
 	 */
 	@Command
-	private void cat(ScriptContext context, String file, String charset)
-			throws BaiduPcsException, IOException, ScriptException {
+	private void cat(ScriptContext context, String file, String charset) throws BaiduPcsException, IOException,
+			ScriptException {
 		BaiduPcs baiduPcs = checkBaiduPcs(context);
 		PrintWriter out = getOutput(context);
 		String absolutePath = getAbsolutePath(context, file);
@@ -649,8 +611,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command(aliases = { "cdownl" })
-	private void cdownlist(ScriptContext context) throws BaiduPcsException,
-			IOException, ScriptException {
+	private void cdownlist(ScriptContext context) throws BaiduPcsException, IOException, ScriptException {
 		BaiduPcs baiduPcs = checkBaiduPcs(context);
 		PrintWriter out = getOutput(context);
 		Map<String, CloudDownloadMeta> metaMap = baiduPcs.cloudDownloadMeta();
@@ -658,8 +619,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 			out.println("NO TASK.");
 			return;
 		}
-		Map<String, CloudDownloadProgress> progressMap = baiduPcs
-				.cloudDownloadProgress(new ArrayList<>(metaMap.keySet()));
+		Map<String, CloudDownloadProgress> progressMap = baiduPcs.cloudDownloadProgress(new ArrayList<>(metaMap
+				.keySet()));
 		for (CloudDownloadMeta meta : metaMap.values()) {
 			CloudDownloadProgress progress = progressMap.get(meta.getTaskID());
 
@@ -671,8 +632,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 					sizeH(progress.getFinishedSize()),
 					progress.getFileSize(),
 					sizeH(progress.getFileSize()),
-					progress.getStartTime() == 0 ? "UNKNOWN" : DATE_FORMAT
-							.format(new Date(progress.getFinishTime() * 1000)));
+					progress.getStartTime() == 0 ? "UNKNOWN" : DATE_FORMAT.format(new Date(progress
+							.getFinishTime() * 1000)));
 			out.println("SAVE AS: " + meta.getSavePathInApp());
 			out.println("SOURCE: " + meta.getSourceUrl());
 			out.println();
@@ -680,9 +641,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command(aliases = { "cdownw" })
-	private void cdownandwait(ScriptContext context, String url, String dir)
-			throws BaiduPcsException, IOException, ScriptException,
-			InterruptedException {
+	private void cdownandwait(ScriptContext context, String url, String dir) throws BaiduPcsException, IOException,
+			ScriptException, InterruptedException {
 		CloudDownloadMeta meta = innerCdownandwait(context, url, dir);
 		PrintWriter errorOut = getErrorOutput(context);
 		Status status = meta.getStatus();
@@ -692,9 +652,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		}
 	}
 
-	private CloudDownloadMeta innerCdownandwait(ScriptContext context,
-			String url, String dir) throws BaiduPcsException, IOException,
-			InterruptedException, ScriptException {
+	private CloudDownloadMeta innerCdownandwait(ScriptContext context, String url, String dir)
+			throws BaiduPcsException, IOException, InterruptedException, ScriptException {
 		BaiduPcs baiduPcs = checkBaiduPcs(context);
 		PrintWriter out = getOutput(context);
 
@@ -702,14 +661,11 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		boolean finished = false;
 		CloudDownloadMeta retMeta = null;
 		while (!finished) {
-			CloudDownloadProgress progress = baiduPcs
-					.cloudDownloadProgress(taskID);
+			CloudDownloadProgress progress = baiduPcs.cloudDownloadProgress(taskID);
 			switch (progress.getStatus()) {
 			case DOWNLOADING:
-				out.println("\r" + progress.getFinishedSize() + "("
-						+ sizeH(progress.getFinishedSize()) + ")/"
-						+ progress.getFileSize() + "("
-						+ sizeH(progress.getFileSize()) + ")");
+				out.println("\r" + progress.getFinishedSize() + "(" + sizeH(progress.getFinishedSize()) + ")/"
+						+ progress.getFileSize() + "(" + sizeH(progress.getFileSize()) + ")");
 				TimeUnit.SECONDS.sleep(3);
 				break;
 			case SUCCESS:
@@ -727,8 +683,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command(aliases = { "cdowns" })
-	private void cdownstart(ScriptContext context, String url, String dir)
-			throws ScriptException, BaiduPcsException, IOException {
+	private void cdownstart(ScriptContext context, String url, String dir) throws ScriptException, BaiduPcsException,
+			IOException {
 		BaiduPcs baiduPcs = checkBaiduPcs(context);
 		String absolutePath = getAbsolutePath(context, dir);
 
@@ -736,16 +692,15 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	}
 
 	@Command(aliases = { "cdownc" })
-	private void cdowncancel(ScriptContext context, String taskID)
-			throws BaiduPcsException, IOException, ScriptException {
+	private void cdowncancel(ScriptContext context, String taskID) throws BaiduPcsException, IOException,
+			ScriptException {
 		BaiduPcs baiduPcs = checkBaiduPcs(context);
 		baiduPcs.cloudDownloadCancel(taskID);
 	}
 
 	@Command(aliases = { "cdowng" })
-	private void cdownget(ScriptContext context, String url, String localPath)
-			throws BaiduPcsException, IOException, ScriptException,
-			InterruptedException {
+	private void cdownget(ScriptContext context, String url, String localPath) throws BaiduPcsException, IOException,
+			ScriptException, InterruptedException {
 		BaiduPcs baiduPcs = checkBaiduPcs(context);
 		PrintWriter out = getOutput(context);
 		PrintWriter errorOut = getErrorOutput(context);
@@ -760,8 +715,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		}
 
 		out.println("Cloud downloading...");
-		CloudDownloadMeta cdMeta = innerCdownandwait(context, url,
-				CDOWNGET_TMPDIR);
+		CloudDownloadMeta cdMeta = innerCdownandwait(context, url, CDOWNGET_TMPDIR);
 		Status status = cdMeta.getStatus();
 		if (status != Status.SUCCESS) {
 			errorOut.println("Cloud download failed: " + status);
@@ -778,14 +732,12 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 		out.println("Done.");
 	}
 
-	private BaiduPcs checkBaiduPcs(ScriptContext context)
-			throws ScriptException {
+	private BaiduPcs checkBaiduPcs(ScriptContext context) throws ScriptException {
 		Object valueObject = context.getAttribute(BAIDUPCS);
 		if (valueObject != null && valueObject instanceof BaiduPcs)
 			return (BaiduPcs) valueObject;
 		else
-			throw new ScriptException("Not open.", null,
-					((Integer) context.getAttribute(LINE_NUMBER)).intValue());
+			throw new ScriptException("Not open.", null, ((Integer) context.getAttribute(LINE_NUMBER)).intValue());
 	}
 
 	private String getCurrDir(ScriptContext context) {
@@ -802,7 +754,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * 
 	 * @param context
 	 * @param givenPath
-	 *            给定路径
+	 *             给定路径
 	 * @return 绝对路径。非根目录不以"/"结尾。
 	 */
 	private String getAbsolutePath(ScriptContext context, String givenPath) {
@@ -828,7 +780,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * 将字节大小转换为合适的单位表示。
 	 * 
 	 * @param size
-	 *            字节数
+	 *             字节数
 	 * @return 表示
 	 */
 	private String sizeH(long size) {
@@ -841,8 +793,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 				break;
 			}
 		}
-		return (unitIndex == 0 ? size : sizeHFormat.format(sizeH))
-				+ units[unitIndex];
+		return (unitIndex == 0 ? size : sizeHFormat.format(sizeH)) + units[unitIndex];
 	}
 
 	/**
@@ -859,9 +810,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * @throws IOException
 	 * @throws ScriptException
 	 */
-	private String genePcsFilePath(ScriptContext context,
-			String absolutePcsPath, String fileName) throws BaiduPcsException,
-			IOException, ScriptException {
+	private String genePcsFilePath(ScriptContext context, String absolutePcsPath, String fileName)
+			throws BaiduPcsException, IOException, ScriptException {
 		BaiduPcs pcs = checkBaiduPcs(context);
 		PrintWriter out = getOutput(context);
 
@@ -894,8 +844,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * 参考{@link #genePcsFilePath(ScriptContext, String, String)}
 	 * 的说明，与之不同的是此方法给定并生成的均是本地路径。
 	 */
-	private Path geneLocalFilePath(ScriptContext context, Path localPath,
-			String fileName) {
+	private Path geneLocalFilePath(ScriptContext context, Path localPath, String fileName) {
 		if (Files.isDirectory(localPath)) {
 			// 存在，是目录
 			localPath = localPath.resolve(fileName);
@@ -912,7 +861,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * 获取PrintWriter类型的标准输出流。
 	 * 
 	 * @param context
-	 *            ScriptContext
+	 *             ScriptContext
 	 * @return PrintWriter标准输出
 	 */
 	private PrintWriter getOutput(ScriptContext context) {
@@ -927,7 +876,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	 * 获取PrintWriter类型的标准错误输出流。
 	 * 
 	 * @param context
-	 *            ScriptContext
+	 *             ScriptContext
 	 * @return PrintWriter标准输出
 	 */
 	private PrintWriter getErrorOutput(ScriptContext context) {

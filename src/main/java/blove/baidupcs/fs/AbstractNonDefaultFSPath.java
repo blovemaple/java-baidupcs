@@ -85,8 +85,7 @@ abstract class AbstractNonDefaultFSPath implements Path {
 	}
 
 	@Override
-	public WatchKey register(WatchService watcher, WatchEvent.Kind<?>... events)
-			throws IOException {
+	public WatchKey register(WatchService watcher, WatchEvent.Kind<?>... events) throws IOException {
 		return register(watcher, events, new WatchEvent.Modifier[0]);
 	}
 

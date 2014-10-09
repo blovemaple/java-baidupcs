@@ -26,23 +26,21 @@ public class BaiduPcsFileSystem extends FileSystem {
 	/**
 	 * @param provider
 	 * @param accessToken
-	 *            开发者标识
+	 *             开发者标识
 	 * @param appName
-	 *            应用名称
+	 *             应用名称
 	 * @param dir
-	 *            文件系统根目录路径，此路径以应用目录为根目录。null或空为应用目录。
+	 *             文件系统根目录路径，此路径以应用目录为根目录。null或空为应用目录。
 	 * @param logLevel
-	 *            打印的日志级别
+	 *             打印的日志级别
 	 * 
 	 * @throws IOException
 	 */
-	BaiduPcsFileSystem(BaiduPcsFileSystemProvider provider, String accessToken,
-			String appName, List<String> dir, LogLevel logLevel)
-			throws IOException {
+	BaiduPcsFileSystem(BaiduPcsFileSystemProvider provider, String accessToken, String appName, List<String> dir,
+			LogLevel logLevel) throws IOException {
 		this.provider = provider;
 		this.appName = appName;
-		this.dir = dir == null ? new String[0] : dir.toArray(new String[dir
-				.size()]);
+		this.dir = dir == null ? new String[0] : dir.toArray(new String[dir.size()]);
 
 		StringBuilder dirStr = new StringBuilder();
 		if (dir == null || dir.isEmpty())
@@ -51,8 +49,7 @@ public class BaiduPcsFileSystem extends FileSystem {
 			for (String dirItem : dir)
 				dirStr.append("/").append(dirItem);
 
-		this.store = new BaiduPcsFileStore(accessToken, appName,
-				dirStr.toString(), logLevel);
+		this.store = new BaiduPcsFileStore(accessToken, appName, dirStr.toString(), logLevel);
 	}
 
 	String getAppName() {
@@ -147,8 +144,7 @@ public class BaiduPcsFileSystem extends FileSystem {
 			if (syntax.equals(REGEX_SYNTAX)) {
 				expr = input;
 			} else {
-				throw new UnsupportedOperationException("Syntax '" + syntax
-						+ "' not recognized");
+				throw new UnsupportedOperationException("Syntax '" + syntax + "' not recognized");
 			}
 		}
 
@@ -165,13 +161,13 @@ public class BaiduPcsFileSystem extends FileSystem {
 
 	@Override
 	public UserPrincipalLookupService getUserPrincipalLookupService() {
-		throw new UnsupportedOperationException(
-				"Get UserPrincipalLookupService is not supported.");
+		throw new UnsupportedOperationException("Get UserPrincipalLookupService is not supported.");
 	}
 
 	@Override
 	public WatchService newWatchService() throws IOException {
-		throw new UnsupportedOperationException("Watch is not supported.");
+		return new BaiduPcsWatchService(this);
+		// throw new UnsupportedOperationException("Watching is not supported.");
 	}
 
 }

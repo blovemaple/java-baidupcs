@@ -30,7 +30,7 @@ public class BaiduPcsException extends IOException {
 	 * 新建一个实例。
 	 * 
 	 * @param errorResponse
-	 *            服务器的返回数据。
+	 *             服务器的返回数据。
 	 * @param httpResponse
 	 */
 	public BaiduPcsException(ErrorResponse errorResponse, Response httpResponse) {

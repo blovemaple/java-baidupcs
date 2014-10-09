@@ -25,9 +25,9 @@ public class ErrorParseHandler implements ErrorHandler {
 			return oriException;
 		else if (oriException instanceof IOException)// IOException
 			return oriException;
-		else if (oriException instanceof ConversionException) // json format not match
-			return new InterfaceException((ConversionException) oriException,
-					httpResponse);
+		else if (oriException instanceof ConversionException) // json format
+													// not match
+			return new InterfaceException((ConversionException) oriException, httpResponse);
 		else {// others unknown
 			return new BaiduPcsException(oriException, httpResponse);
 		}
@@ -38,10 +38,11 @@ public class ErrorParseHandler implements ErrorHandler {
 
 		if (httpResponse.getBody() != null) {
 			try {
-				errorResponse = GSON_INSTANCE.fromJson(new InputStreamReader(
-						httpResponse.getBody().in()), ErrorResponse.class);
+				errorResponse = GSON_INSTANCE.fromJson(new InputStreamReader(httpResponse.getBody().in()),
+						ErrorResponse.class);
 			} catch (JsonSyntaxException | JsonIOException | IOException e) {
-				// response body的json不符合ErrorResponse，或读取时出现IO异常，当作没有body好了，无视之。
+				// response
+				// body的json不符合ErrorResponse，或读取时出现IO异常，当作没有body好了，无视之。
 			}
 		}
 
@@ -71,24 +72,18 @@ public class ErrorParseHandler implements ErrorHandler {
 			case "31045":
 				return new UserRelatedException(errorResponse, httpResponse);
 			case "31061":
-				return new BaiduPcsFileExistsException(errorResponse,
-						httpResponse);
+				return new BaiduPcsFileExistsException(errorResponse, httpResponse);
 			case "31062":
-				return new BaiduPcsIllegalFileNameException(errorResponse,
-						httpResponse);
+				return new BaiduPcsIllegalFileNameException(errorResponse, httpResponse);
 			case "31063":
-				return new BaiduPcsParentDirNotExistsException(errorResponse,
-						httpResponse);
+				return new BaiduPcsParentDirNotExistsException(errorResponse, httpResponse);
 			case "31065":
-				return new BaiduPcsDirectoryIsFullException(errorResponse,
-						httpResponse);
+				return new BaiduPcsDirectoryIsFullException(errorResponse, httpResponse);
 			case "31066":
 			case "31202":
-				return new BaiduPcsFileNotExistsException(errorResponse,
-						httpResponse);
+				return new BaiduPcsFileNotExistsException(errorResponse, httpResponse);
 			case "31079":
-				return new BaiduPcsMD5NotExistsException(errorResponse,
-						httpResponse);
+				return new BaiduPcsMD5NotExistsException(errorResponse, httpResponse);
 			case "31218":
 				return new OutOfStorageException(errorResponse, httpResponse);
 			case "31219":

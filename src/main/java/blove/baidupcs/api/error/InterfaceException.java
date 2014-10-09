@@ -15,7 +15,7 @@ public class InterfaceException extends BaiduPcsException {
 	 * 当请求数据接口不符时创建实例。
 	 * 
 	 * @param errorResponse
-	 *            服务器返回的错误信息
+	 *             服务器返回的错误信息
 	 * @param httpResponse
 	 * 
 	 */
@@ -27,7 +27,7 @@ public class InterfaceException extends BaiduPcsException {
 	 * 当返回数据接口不符时创建实例。
 	 * 
 	 * @param cause
-	 *            返回的json转换异常
+	 *             返回的json转换异常
 	 * @param httpResponse
 	 */
 	public InterfaceException(ConversionException cause, Response httpResponse) {

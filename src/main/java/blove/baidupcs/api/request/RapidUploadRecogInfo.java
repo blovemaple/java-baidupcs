@@ -23,12 +23,11 @@ public class RapidUploadRecogInfo {
 	 * 从指定输入流读取数据生成实例。以输入流的实际长度为总大小。
 	 * 
 	 * @param in
-	 *            输入流
+	 *             输入流
 	 * @return 实例。如果不符合秒传条件则返回null。
 	 * @throws IOException
 	 */
-	public static RapidUploadRecogInfo fromInputStream(InputStream in)
-			throws IOException {
+	public static RapidUploadRecogInfo fromInputStream(InputStream in) throws IOException {
 		return fromInputStream(in, -1);
 	}
 
@@ -36,14 +35,13 @@ public class RapidUploadRecogInfo {
 	 * 从指定输入流读取数据生成实例。
 	 * 
 	 * @param in
-	 *            输入流
+	 *             输入流
 	 * @param size
-	 *            总大小。如果指定为负数，则以输入流的实际长度为总大小。
+	 *             总大小。如果指定为负数，则以输入流的实际长度为总大小。
 	 * @return 实例。如果不符合秒传条件则返回null。
 	 * @throws IOException
 	 */
-	public static RapidUploadRecogInfo fromInputStream(InputStream in, long size)
-			throws IOException {
+	public static RapidUploadRecogInfo fromInputStream(InputStream in, long size) throws IOException {
 		if (size < 0)
 			size = Long.MAX_VALUE;
 		if (size < SLICE_SIZE)
@@ -60,13 +58,8 @@ public class RapidUploadRecogInfo {
 			long readCount = 0;
 
 			// 读取一直到SLICE_SIZE或者流结束（不用考虑size，因为保证了size>=SLICE_SIZE）
-			while ((readOnce = in.read(
-					buf,
-					0,
-					Math.min(
-							buf.length,
-							(int) Math.min(Integer.MAX_VALUE, SLICE_SIZE
-									- readCount)))) >= 0) {
+			while ((readOnce = in.read(buf, 0,
+					Math.min(buf.length, (int) Math.min(Integer.MAX_VALUE, SLICE_SIZE - readCount)))) >= 0) {
 				md5.update(buf, 0, readOnce);
 				sliceMD5.update(buf, 0, readOnce);
 				crc32.update(buf, 0, readOnce);
@@ -81,8 +74,8 @@ public class RapidUploadRecogInfo {
 			instance.setSliceMD5(hexString(sliceMD5.digest()));
 
 			// 读取一直到size或者流结束
-			while ((readOnce = in.read(buf, 0, Math.min(buf.length,
-					(int) Math.min(Integer.MAX_VALUE, size - readCount)))) >= 0) {
+			while ((readOnce = in.read(buf, 0,
+					Math.min(buf.length, (int) Math.min(Integer.MAX_VALUE, size - readCount)))) >= 0) {
 				md5.update(buf, 0, readOnce);
 				crc32.update(buf, 0, readOnce);
 				readCount += readOnce;
@@ -192,7 +185,7 @@ public class RapidUploadRecogInfo {
 	 * 校验参数是否合法。如果不合法则抛出IllegalArgumentException。
 	 * 
 	 * @throws IllegalArgumentException
-	 *             参数不合法
+	 *              参数不合法
 	 */
 	public void validate() {
 		// TODO
