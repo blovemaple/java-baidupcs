@@ -12,6 +12,19 @@ import javax.script.ScriptEngineFactory;
  * @author blove
  */
 public class BaiduPcsScriptFactory implements ScriptEngineFactory {
+	/**
+	 * 脚本引擎名称（1）。
+	 */
+	public static final String NAME_1 = "baidupcsscript";
+	/**
+	 * 脚本引擎名称（2）。
+	 */
+	public static final String NAME_2 = "baidupcs";
+	/**
+	 * 脚本引擎名称（3）。
+	 */
+	public static final String NAME_3 = "bps";
+
 	@Override
 	public String getEngineName() {
 		return "Baidu PCS Script Engine";
@@ -24,7 +37,7 @@ public class BaiduPcsScriptFactory implements ScriptEngineFactory {
 
 	@Override
 	public List<String> getExtensions() {
-		return Arrays.asList("baidupcs", "bp");
+		return Arrays.asList("baidupcs", "bps");
 	}
 
 	@Override
@@ -34,7 +47,7 @@ public class BaiduPcsScriptFactory implements ScriptEngineFactory {
 
 	@Override
 	public List<String> getNames() {
-		return Arrays.asList("baidupcsscript", "baidupcs", "bps");
+		return Arrays.asList(NAME_1, NAME_2, NAME_3);
 	}
 
 	@Override
