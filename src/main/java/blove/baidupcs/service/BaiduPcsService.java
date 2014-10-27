@@ -238,6 +238,8 @@ public interface BaiduPcsService {
 	 * @param accessToken
 	 *             开发者准入标识。
 	 * @return
+	 * @throws Throwable
+	 *              ErrorHandler可能返回的任何异常或错误
 	 */
 	@GET("/quota")
 	QuotaResponse quotaInfo(@Query("method") String method, @Query("access_token") String accessToken)

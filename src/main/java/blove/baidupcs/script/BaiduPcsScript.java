@@ -43,7 +43,6 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import retrofit.RestAdapter.LogLevel;
 import retrofit.mime.TypedInput;
 import blove.baidupcs.api.BaiduPcs;
 import blove.baidupcs.api.error.BaiduPcsException;
@@ -53,11 +52,11 @@ import blove.baidupcs.api.error.BaiduPcsMD5NotExistsException;
 import blove.baidupcs.api.error.ErrorResponse;
 import blove.baidupcs.api.request.OnDup;
 import blove.baidupcs.api.request.RapidUploadRecogInfo;
+import blove.baidupcs.api.response.CloudDownloadBasic.Status;
 import blove.baidupcs.api.response.CloudDownloadMeta;
 import blove.baidupcs.api.response.CloudDownloadProgress;
 import blove.baidupcs.api.response.FileMeta;
 import blove.baidupcs.api.response.Quota;
-import blove.baidupcs.api.response.CloudDownloadBasic.Status;
 import blove.baidupcs.util.ProgressInputStream;
 import blove.baidupcs.util.ProgressObserver;
 
@@ -73,7 +72,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	public static final String BAIDUPCS = "blove.baidupcs.baidupcs";
 
 	/**
-	 * 当前目录。类型为String。
+	 * Attribute项，当前目录。类型为String。
 	 */
 	public static final String CURR_DIR = "blove.baidupcs.curr_dir";
 
@@ -150,6 +149,8 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 
 					lineNumber++;
 				}
+			} catch (ScriptException e) {
+				throw e;
 			} catch (IOException e) {
 				throw new ScriptException("Failed to read script.", null, lineNumber);
 			} catch (InvocationTargetException e) {
@@ -244,7 +245,7 @@ public class BaiduPcsScript extends AbstractScriptEngine {
 	@Command
 	private void open(ScriptContext context, String accessToken, String appName) throws BaiduPcsException,
 			IOException, ScriptException {
-		BaiduPcs pcs = new BaiduPcs(accessToken, appName, LogLevel.BASIC);
+		BaiduPcs pcs = new BaiduPcs(accessToken, appName);
 		pcs.list("/");// 验证是否有权限
 		context.setAttribute(CURR_DIR, "/", ScriptContext.ENGINE_SCOPE);// 重置目录
 		context.setAttribute(BAIDUPCS, pcs, ScriptContext.ENGINE_SCOPE);

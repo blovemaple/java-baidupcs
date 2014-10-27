@@ -44,18 +44,9 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- <plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
+			<!-- <plugin> <artifactId>maven-javadoc-plugin</artifactId> <executions> 
+				<execution> <id>attach-javadocs</id> <phase>deploy</phase> <goals> <goal>jar</goal> 
+				</goals> </execution> </executions> </plugin> -->
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<executions>
@@ -64,6 +55,19 @@
 						<phase>deploy</phase>
 						<goals>
 							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
 						</goals>
 					</execution>
 				</executions>
