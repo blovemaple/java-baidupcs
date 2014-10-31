@@ -4,6 +4,7 @@ import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Query;
+import retrofit.http.Streaming;
 
 public interface BaiduPcsDService {
 	/**
@@ -43,6 +44,7 @@ public interface BaiduPcsDService {
 	 *              ErrorHandler可能返回的任何异常或错误
 	 */
 	@GET("/file")
+	@Streaming
 	Response download(@Query("method") String method, @Query("access_token") String access_token,
 			@Query("path") String path, @Header("Range") String range) throws Throwable;
 }
