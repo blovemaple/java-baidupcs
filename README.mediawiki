@@ -2,8 +2,8 @@
 百度网盘API（Baidu PCS API）的Java封装，提供适合Java使用的方式访问百度PCS的API。还没写完。:)
 #百度网盘API的基本适配，遵循API原有定义（使用了Retrofit工具） - blove.baidupcs.service;
 #将API进一步封装，更加易用 - blove.baidupcs.api;
-#实现用Java NIO文件系统API（java.nio.file）访问百度PCS - blove.baidupcs.fs;
-#实现用Java Scripting API（javax.script）访问百度PCS，并且提供Runner即主方法入口 - blove.baidupcs.script
+#实现用Java NIO文件系统API（java.nio.file）访问百度网盘 - blove.baidupcs.fs;
+#实现用Java Scripting API（javax.script）访问百度网盘，并且提供Runner即主方法入口 - blove.baidupcs.script
 
 ==用于Maven项目依赖==
 *Config dependency
