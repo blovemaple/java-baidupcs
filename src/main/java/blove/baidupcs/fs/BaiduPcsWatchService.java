@@ -106,11 +106,9 @@ public class BaiduPcsWatchService implements WatchService {
 			if (events.isEmpty())
 				return Collections.emptyList();
 			else {
-				List<WatchEvent<?>> crtEvents = new ArrayList<>(this.events.size());
-				crtEvents.addAll(this.events);
+				List<WatchEvent<?>> crtEvents = new ArrayList<>(this.events);
 				this.events.clear();
 				return crtEvents;
-
 			}
 		}
 

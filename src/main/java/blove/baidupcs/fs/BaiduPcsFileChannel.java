@@ -42,7 +42,8 @@ public class BaiduPcsFileChannel implements SeekableByteChannel {
 	private SeekableByteChannel cacheFileChannel;
 	private boolean changed = false;
 
-	BaiduPcsFileChannel(BaiduPcsPath path, Set<? extends OpenOption> options) throws IOException {
+	BaiduPcsFileChannel(BaiduPcsPath path, Set<? extends OpenOption> options)
+			throws IOException {
 		this.pathServiceStr = path.toServiceString();
 		service = path.getFileSystem().getFileStore().getService();
 
@@ -83,7 +84,8 @@ public class BaiduPcsFileChannel implements SeekableByteChannel {
 		if (!truncate) {
 			try {
 				try (InputStream in = service.download(pathServiceStr).in()) {
-					Files.copy(in, cacheFilePath, StandardCopyOption.REPLACE_EXISTING);
+					Files.copy(in, cacheFilePath,
+							StandardCopyOption.REPLACE_EXISTING);
 				}
 			} catch (BaiduPcsFileNotExistsException e) {
 			}
@@ -153,7 +155,8 @@ public class BaiduPcsFileChannel implements SeekableByteChannel {
 	}
 
 	@Override
-	public synchronized SeekableByteChannel position(long newPosition) throws IOException {
+	public synchronized SeekableByteChannel position(long newPosition)
+			throws IOException {
 		checkOpen();
 		prepareCacheFileChannel();
 		cacheFileChannel.position(newPosition);
@@ -168,7 +171,8 @@ public class BaiduPcsFileChannel implements SeekableByteChannel {
 	}
 
 	@Override
-	public synchronized SeekableByteChannel truncate(long size) throws IOException {
+	public synchronized SeekableByteChannel truncate(long size)
+			throws IOException {
 		checkOpen();
 		prepareCacheFileChannel();
 		long oriSize = cacheFileChannel.size();
@@ -188,8 +192,8 @@ public class BaiduPcsFileChannel implements SeekableByteChannel {
 	 */
 	private void prepareCacheFileChannel() throws IOException {
 		if (cacheFileChannel == null) {
-			cacheFileChannel = Files
-					.newByteChannel(cacheFilePath, StandardOpenOption.READ, StandardOpenOption.WRITE);
+			cacheFileChannel = Files.newByteChannel(cacheFilePath,
+					StandardOpenOption.READ, StandardOpenOption.WRITE);
 			changed = false;
 		}
 	}
@@ -206,9 +210,10 @@ public class BaiduPcsFileChannel implements SeekableByteChannel {
 				cacheFileChannel = null;
 			}
 
-			try (BufferedInputStream in = new BufferedInputStream(Files.newInputStream(cacheFilePath,
-					StandardOpenOption.READ))) {
-				service.upload(pathServiceStr, in, Files.size(cacheFilePath), OnDup.OVERWRITE);
+			try (BufferedInputStream in = new BufferedInputStream(
+					Files.newInputStream(cacheFilePath, StandardOpenOption.READ))) {
+				service.upload(pathServiceStr, in, Files.size(cacheFilePath),
+						OnDup.OVERWRITE);
 			}
 			needCreate = false;
 		}
