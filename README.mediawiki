@@ -6,6 +6,7 @@
 #实现用Java Scripting API（javax.script）访问百度网盘，并且提供Runner即主方法入口 - blove.baidupcs.script
 
 ==用于Maven项目依赖==
+（这个地方的库里是旧的。最好还是用代码构建一个新的包用。）
 *Config dependency
  <dependencies>
   <dependency>
